@@ -19,7 +19,7 @@ export function OrderStatusSelector({
   const [nextStatus, setNextStatus] = useState<OrderStatus | "">("");
 
   if (allowedNextStatuses.length === 0) {
-    return <p className="text-sm text-slate-500">This order is in a final state — no further status changes are possible.</p>;
+    return <p className="text-sm text-slate-500">This order is completed — no further status changes are possible.</p>;
   }
 
   return (
