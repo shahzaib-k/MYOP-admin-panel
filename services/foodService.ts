@@ -7,6 +7,7 @@ export interface FoodPayload {
   category: string;
   image: string;
   description: string;
+  available?: boolean;
 }
 
 export const getFoods = async (): Promise<Food[]> => {

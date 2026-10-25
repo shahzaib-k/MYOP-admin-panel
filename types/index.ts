@@ -31,6 +31,8 @@ export interface Food {
   category: string;
   image: string;
   description: string;
+  /** False = sold out. Items saved before the flag existed may omit it. */
+  available?: boolean;
   createdAt: string;
   updatedAt: string;
 }

@@ -38,6 +38,8 @@ export function FoodForm({
   const [category, setCategory] = useState(initialData?.category ?? "");
   const [description, setDescription] = useState(initialData?.description ?? "");
   const [image, setImage] = useState(initialData?.image ?? "");
+  // Missing on items saved before the flag existed, which count as available.
+  const [available, setAvailable] = useState(initialData?.available !== false);
   const [errors, setErrors] = useState<FieldErrors>({});
 
   const validate = (): boolean => {
@@ -65,6 +67,7 @@ export function FoodForm({
       category,
       image: image.trim(),
       description: description.trim(),
+      available,
     });
   };
 
@@ -155,6 +158,23 @@ export function FoodForm({
           }}
         />
       )}
+
+      <label className="flex items-start gap-3 rounded-lg border border-slate-200 px-3 py-3 text-sm">
+        <input
+          type="checkbox"
+          className="mt-0.5 h-4 w-4 rounded border-slate-300"
+          checked={available}
+          onChange={(event) => setAvailable(event.target.checked)}
+          disabled={isSubmitting}
+        />
+        <span>
+          <span className="font-medium text-slate-900">Available for ordering</span>
+          <span className="block text-slate-500">
+            Untick to mark this item as sold out. Customers will see it greyed out and
+            it will not be suggested.
+          </span>
+        </span>
+      </label>
 
       <div className="flex justify-end gap-3 pt-2">
         <Button type="button" variant="secondary" onClick={onCancel} disabled={isSubmitting}>

@@ -27,6 +27,8 @@ export default function FoodsPage() {
   const [foodToDelete, setFoodToDelete] = useState<Food | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [toggleError, setToggleError] = useState<string | null>(null);
 
   // GET /foods returns the whole list with no server-side search or
   // category filter, so both happen here against the already-fetched data.
@@ -57,8 +59,29 @@ export default function FoodsPage() {
     }
   };
 
+  /** One click flips sold-out/available without opening the edit form. */
+  const handleToggleAvailability = async (food: Food) => {
+    setTogglingId(food.id);
+    setToggleError(null);
+
+    try {
+      await foodService.updateFood(food.id, { available: food.available === false });
+      await refetch();
+    } catch (err) {
+      setToggleError(normalizeError(err).message);
+    } finally {
+      setTogglingId(null);
+    }
+  };
+
   return (
     <div className="space-y-4">
+      {toggleError && (
+        <div className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">
+          {toggleError}
+        </div>
+      )}
+
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-1 flex-col gap-3 sm:flex-row">
           <Input
@@ -103,6 +126,8 @@ export default function FoodsPage() {
         ) : (
           <FoodTable
             foods={filteredFoods}
+            onToggleAvailability={handleToggleAvailability}
+            togglingId={togglingId}
             onEdit={(food) => router.push(`/dashboard/foods/${food.id}`)}
             onDelete={(food) => {
               setFoodToDelete(food);
